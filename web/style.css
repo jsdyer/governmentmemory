@@ -23,6 +23,8 @@ button{min-height:2.4rem;padding:.45rem .7rem;cursor:pointer;color:var(--green);
 button:hover{background:var(--sage)}
 button.primary{background:#405c43;color:white;border-color:#405c43}
 button.primary:hover{background:#243c27}
+button[aria-pressed=true]{background:var(--sage);border-color:#6e885e;color:#243c27}
+button[data-record-key][aria-pressed=true]::before{content:"✓ ";}
 button:disabled{opacity:.45;cursor:default}
 .samples,.actions,.metadata,.pagination{display:flex;gap:.5rem .8rem;flex-wrap:wrap;align-items:center}
 .samples{margin-top:.75rem}
@@ -44,6 +46,19 @@ dialog{color:var(--ink);background:var(--sheet);border:1px solid var(--line);pad
 dialog::backdrop{background:#1c3023b0}
 dialog h2{margin-top:0}
 textarea{min-height:10rem;resize:vertical}
+.workspace{margin-top:.85rem}
+.workspace>summary{font-size:1.05rem}
+.workspace>summary .code{margin-inline-start:.35rem}
+.workspace p{margin:.65rem 0}
+.saved-records{list-style:none;margin:.75rem 0 1rem;padding:0;border-top:1px solid var(--line)}
+.saved-records:empty{display:none}
+.saved-records li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem 0;border-bottom:1px solid var(--line)}
+.saved-records li div{min-width:0;flex:1 1 15rem;overflow-wrap:anywhere}
+.saved-records li small{display:block;margin-top:.25rem}
+.saved-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+.check{flex-direction:row;align-items:center;margin-top:.75rem}
+.check input{width:1rem;height:1rem;accent-color:var(--green)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 footer{background:#1c2b21;color:#dce8d5;border-top:4px solid #819a76;padding:1.3rem 0;font-size:.87rem;line-height:1.55}
 footer a{color:#e0edd9}
 .skip{position:absolute;left:.75rem;top:-10rem;padding:.55rem;background:white;color:var(--ink);z-index:3}

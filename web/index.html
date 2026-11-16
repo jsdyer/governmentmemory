@@ -12,11 +12,27 @@
     <label>Record type<select id="type"><option value="">All types</option><option>Class of Records</option><option>Personal Information Bank</option></select></label></form>
     <div class="samples" aria-label="Example searches"><button type="button" data-query="authentication">Authentication</button><button type="button" data-query="network monitoring">Network monitoring</button><button type="button" data-query="payment service">Payment services</button><button type="button" id="clear">Clear</button></div>
   </section>
+  <details id="workspace" class="panel workspace">
+    <summary>Saved records <span class="code" id="saved-count">0</span></summary>
+    <p id="saved-storage" class="muted">Saved references stay in this browser.</p>
+    <p id="saved-empty" class="muted">Use Save record on a result to collect an official reference.</p>
+    <ul id="saved-records" class="saved-records" aria-label="Saved inventory references"></ul>
+    <div id="saved-actions" hidden>
+      <div class="toolbar saved-toolbar">
+        <label>Draft recipient<select id="saved-institution"></select></label>
+        <label>Draft type<select id="saved-scope"><option value="records">Access to Information Act</option><option value="personal">Privacy Act · my personal information</option></select></label>
+      </div>
+      <label id="include-standard-label" class="check" hidden><input id="include-standard" type="checkbox"> Include saved government-wide references</label>
+      <p class="metadata" id="saved-selection"></p>
+      <div class="actions"><button type="button" class="primary" id="draft-saved">Draft request outline</button><button type="button" id="export-saved">Download all references</button></div>
+    </div>
+  </details>
+  <p class="sr-only" id="save-status" role="status"></p>
   <p class="status" id="status" role="status">Opening official inventory index…</p>
   <section class="cards" id="results" aria-label="Matching holding descriptions"></section>
   <nav id="pagination" class="pagination" aria-label="Result pages" hidden><button type="button" id="previous">Previous</button><span id="page" class="metadata"></span><button type="button" id="next">Next</button></nav>
   <p class="note">An inventory describes potential holdings. Confirm applicability and scope with the institution. A Personal Information Bank may help locate your own information. A Class of Records describes files associated with an activity.</p>
 </main>
-<dialog id="draft" aria-labelledby="draft-title"><h2 id="draft-title">Request outline</h2><p class="muted">Edit the outline and add dates plus the specific information you need.</p><label>Editable request outline<textarea id="draft-text"></textarea></label><div class="actions"><button type="button" id="copy">Copy outline</button><button type="button" id="close">Close</button><a href="https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information/request-information/make-request.html">Official request guidance ↗</a></div><p id="copy-status" role="status"></p></dialog>
+<dialog id="draft" aria-labelledby="draft-title"><h2 id="draft-title">Request outline</h2><p class="muted">Edit the outline and add dates plus the specific information you need.</p><label>Editable request outline<textarea id="draft-text"></textarea></label><div class="actions"><button type="button" id="copy">Copy outline</button><button type="button" id="download-draft">Download outline</button><button type="button" id="close">Close</button><a href="https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information/request-information/make-request.html">Official request guidance ↗</a></div><p id="copy-status" role="status"></p></dialog>
 <footer><div class="wrap"><b>Sources</b> Treasury Board of Canada Secretariat’s <a href="https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information/info-source.html">Info Source</a>, plus inventories from Shared Services Canada, CRA, IRCC and Finance Canada. Short excerpts are attributed to their individual source pages. <span id="built"></span> <a href="https://github.com/jsdyer/governmentmemory">Project source</a></div></footer>
 <script type="module" src="./app.mjs"></script></body></html>
