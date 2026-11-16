@@ -4,6 +4,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from html.parser import HTMLParser
+from http.client import IncompleteRead
 import json
 from pathlib import Path
 import re
@@ -137,16 +138,16 @@ def acquire(item, local):
     if local:
         html = (local / f"{key}.html").read_text(encoding="utf-8")
     else:
-        for attempt in range(3):
+        for attempt in range(2):
             try:
                 request = Request(url, headers={"User-Agent": "CoolCode Government Memory Map"})
-                with urlopen(request, timeout=40) as response:
+                with urlopen(request, timeout=12) as response:
                     html = response.read(3_000_001).decode("utf-8")
                 if len(html) > 3_000_000:
                     raise ValueError(f"{key} HTML snapshot exceeded expected size")
                 break
-            except (URLError, TimeoutError):
-                if attempt == 2:
+            except (URLError, TimeoutError, IncompleteRead):
+                if attempt == 1:
                     raise
                 sleep(2 ** attempt)
     records = extract(html, key)
@@ -158,19 +159,31 @@ def acquire(item, local):
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
-    cli.add_argument("--input-dir", type=Path, help="Read saved <source key>.html files")
+    inputs = cli.add_mutually_exclusive_group()
+    inputs.add_argument("--input-dir", type=Path, help="Read saved <source key>.html files")
+    inputs.add_argument("--seed", action="store_true", help="Use the checked-in dated source snapshot")
     args = cli.parse_args()
-    with ThreadPoolExecutor(max_workers=6) as pool:
-        outputs = list(pool.map(lambda item: acquire(item, args.input_dir), SOURCES.items()))
-    records = [item for entries in outputs for item in entries]
+    snapshot = None
+    if not args.seed:
+        try:
+            with ThreadPoolExecutor(max_workers=6) as pool:
+                outputs = list(pool.map(lambda item: acquire(item, args.input_dir), SOURCES.items()))
+            snapshot = {"built": date.today().isoformat(), "records": [item for entries in outputs for item in entries]}
+        except (URLError, TimeoutError, IncompleteRead, UnicodeError, ValueError, ConnectionError) as error:
+            if args.input_dir:
+                raise
+            print(f"Source refresh unavailable: {error}. Using the verified seed.", flush=True)
+    if snapshot is None:
+        snapshot = json.loads((ROOT / "data" / "seed.json").read_text(encoding="utf-8"))
+        if len(snapshot.get("records", [])) < 250 or not snapshot.get("built"):
+            raise ValueError("The bundled source snapshot is incomplete")
+        snapshot["fallback"] = True
     dist = ROOT / "dist"
     if dist.exists():
         rmtree(dist)
     copytree(ROOT / "web", dist)
-    (dist / "records.json").write_text(json.dumps({
-        "built": date.today().isoformat(), "records": records
-    }, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"Wrote {len(records)} records", flush=True)
+    (dist / "records.json").write_text(json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    print(f"Wrote {len(snapshot['records'])} records", flush=True)
 
 
 if __name__ == "__main__":

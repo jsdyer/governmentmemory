@@ -102,7 +102,7 @@ async function init() {
     for (const field of ['query', 'institution', 'type']) {
       if (saved.has(field)) $(field).value = saved.get(field).slice(0, 160);
     }
-    $('built').textContent = 'Index built ' + data.built + '.';
+    $('built').textContent = data.fallback ? 'Using the dated source snapshot from ' + data.built + '.' : 'Index built ' + data.built + '.';
   } catch {
     $('status').textContent = 'The index could not be opened. Follow the official Info Source links below, or reload the page.';
     return;

@@ -6,4 +6,6 @@ The build covers the English inventories from Shared Services Canada, the Canada
 
 Run `python3 scripts/build.py` and serve `dist/` over HTTP. The builder uses the Python standard library. For deterministic reruns, save the six HTML sources with filenames `ssc.html`, `cra.html`, `ircc.html`, `fin.html`, `tbs.html` and `classes.html`, then pass `--input-dir /path/to/snapshots`.
 
+The site uses the checked-in dated, verified source snapshot if an official page is unavailable or its record structure changes. The footer clearly labels that fallback by its original retrieval date. Run `python3 scripts/build.py --seed` to reproduce it.
+
 Sources are listed in `scripts/build.py`. Reproduction is attributed to the issuing agencies under [Canada.ca terms](https://www.canada.ca/en/transparency/terms.html). This independent, noncommercial tool is unaffiliated with the Government of Canada.
