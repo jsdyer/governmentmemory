@@ -10,6 +10,16 @@ Run `python3 scripts/build.py` and serve `dist/` over HTTP. The builder uses the
 
 Every Monday, GitHub Actions retrieves and validates all six pages before deploying. Each successful online build records its UTC retrieval time in `records.json`. If a source is unavailable or its markup fails validation, the job fails and the existing Pages deployment stays available. For an offline build, use `python3 scripts/build.py --seed`. The footer labels this bundled snapshot with its original date.
 
+### Import an independently retrieved official export
+
+When Canada.ca is unreachable from the hosted runner, a maintainer can run the same six-source collector from a network that can reach the official pages. From a clean checkout, run:
+
+```sh
+python3 scripts/build.py && gzip -n -c dist/records.json > data/official-export.json.gz
+```
+
+Commit that file on `main` to publish the export. The push build checks its original UTC retrieval time, required record fields and coverage of every source, and compares it with the public index. An older or incomplete import stops before deployment. Weekly and manually dispatched refreshes always contact the six official pages.
+
 Run `node --test tests/*.test.mjs` to check reference persistence, recipient scoping and draft exports against the source snapshot.
 
 Sources are listed in `scripts/build.py`. Reproduction is attributed to the issuing agencies under [Canada.ca terms](https://www.canada.ca/en/transparency/terms.html). This independent, noncommercial tool is unaffiliated with the Government of Canada.
