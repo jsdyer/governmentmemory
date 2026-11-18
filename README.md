@@ -8,7 +8,7 @@ The build covers the English inventories from Shared Services Canada, the Canada
 
 Run `python3 scripts/build.py` and serve `dist/` over HTTP. The builder uses the Python standard library. For deterministic reruns, save the six HTML sources with filenames `ssc.html`, `cra.html`, `ircc.html`, `fin.html`, `tbs.html` and `classes.html`, then pass `--input-dir /path/to/snapshots`.
 
-The site uses the checked-in dated, verified source snapshot if an official page is unavailable or its record structure changes. The footer clearly labels that fallback by its original retrieval date. Run `python3 scripts/build.py --seed` to reproduce it.
+Every Monday, GitHub Actions retrieves and validates all six pages before deploying. Each successful online build records its UTC retrieval time in `records.json`. If a source is unavailable or its markup fails validation, the job fails and the existing Pages deployment stays available. For an offline build, use `python3 scripts/build.py --seed`. The footer labels this bundled snapshot with its original date.
 
 Run `node --test tests/*.test.mjs` to check reference persistence, recipient scoping and draft exports against the source snapshot.
 

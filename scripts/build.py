@@ -2,7 +2,7 @@
 """Extract labelled records and banks from six official Info Source pages."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date
+from datetime import datetime, timezone
 from html.parser import HTMLParser
 from http.client import IncompleteRead
 import json
@@ -10,7 +10,7 @@ from pathlib import Path
 import re
 from shutil import copytree, rmtree
 from time import sleep
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
@@ -138,21 +138,25 @@ def acquire(item, local):
     if local:
         html = (local / f"{key}.html").read_text(encoding="utf-8")
     else:
-        for attempt in range(2):
+        attempts = 4
+        for attempt in range(1, attempts + 1):
             try:
                 request = Request(url, headers={"User-Agent": "CoolCode Government Memory Map"})
-                with urlopen(request, timeout=12) as response:
-                    html = response.read(3_000_001).decode("utf-8")
-                if len(html) > 3_000_000:
-                    raise ValueError(f"{key} HTML snapshot exceeded expected size")
+                with urlopen(request, timeout=45) as response:
+                    body = response.read(3_000_001)
+                if len(body) > 3_000_000:
+                    raise ValueError(f"{key} HTML snapshot exceeded expected size at {url}")
+                html = body.decode("utf-8")
                 break
-            except (URLError, TimeoutError, IncompleteRead):
-                if attempt == 1:
-                    raise
+            except (URLError, TimeoutError, ConnectionError, IncompleteRead) as error:
+                print(f"{name} ({key}), attempt {attempt}/{attempts} at {url}: {error}", flush=True)
+                retryable = not isinstance(error, HTTPError) or error.code in (408, 429) or error.code >= 500
+                if not retryable or attempt == attempts:
+                    raise RuntimeError(f"Unable to retrieve {name} ({key}) from {url}") from error
                 sleep(2 ** attempt)
     records = extract(html, key)
     if len(records) < 5:
-        raise ValueError(f"{key} returned {len(records)} labelled records. Check its markup before publishing.")
+        raise ValueError(f"{url} ({key}) returned {len(records)} labelled records. Check its markup before publishing.")
     print(f"{name} ({key}): {len(records)} labelled records", flush=True)
     return records
 
@@ -163,21 +167,18 @@ def main():
     inputs.add_argument("--input-dir", type=Path, help="Read saved <source key>.html files")
     inputs.add_argument("--seed", action="store_true", help="Use the checked-in dated source snapshot")
     args = cli.parse_args()
-    snapshot = None
-    if not args.seed:
-        try:
-            with ThreadPoolExecutor(max_workers=6) as pool:
-                outputs = list(pool.map(lambda item: acquire(item, args.input_dir), SOURCES.items()))
-            snapshot = {"built": date.today().isoformat(), "records": [item for entries in outputs for item in entries]}
-        except (URLError, TimeoutError, IncompleteRead, UnicodeError, ValueError, ConnectionError) as error:
-            if args.input_dir:
-                raise
-            print(f"Source refresh unavailable: {error}. Using the verified seed.", flush=True)
-    if snapshot is None:
+    if args.seed:
         snapshot = json.loads((ROOT / "data" / "seed.json").read_text(encoding="utf-8"))
         if len(snapshot.get("records", [])) < 250 or not snapshot.get("built"):
             raise ValueError("The bundled source snapshot is incomplete")
         snapshot["fallback"] = True
+    else:
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            outputs = list(pool.map(lambda item: acquire(item, args.input_dir), SOURCES.items()))
+        completed = datetime.now(timezone.utc)
+        snapshot = {"built": completed.date().isoformat(), "records": [item for entries in outputs for item in entries]}
+        if not args.input_dir:
+            snapshot["retrievedAt"] = completed.isoformat(timespec="seconds").replace("+00:00", "Z")
     dist = ROOT / "dist"
     if dist.exists():
         rmtree(dist)
