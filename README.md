@@ -1,5 +1,9 @@
 # Government Memory Map
 
+<!-- coolcode:guide -->
+Save relevant record classes or Personal Information Banks, choose one institution, and edit its request outline before copying or downloading it. Government-wide references are optional and need an applicability check against that institution’s inventory.
+<!-- /coolcode:guide -->
+
 [Open Government Memory Map](https://coolcode.ca/governmentmemory/). Search selected official Info Source inventories for record classes, Personal Information Banks, record numbers and published retention descriptions. Each result links to its source and offers a browser-local outline for a request, plus a topic link into the CoolCode ATIP Records Explorer.
 
 Use **Save record** to collect references across searches. In **Saved records**, choose an institution and a draft type to make a request outline with the selected references. You can opt in to including government-wide entries for that institution. Check applicability against its inventory. Copy or download the edited outline as text, or download the full saved reference list as Markdown. This workspace stores public codes, titles and source links in your browser. Outline edits live in the dialog and are discarded on close.

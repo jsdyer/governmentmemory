@@ -1,0 +1,26 @@
+{
+  "id": "governmentmemory",
+  "title": "Government Memory Map",
+  "description": "Find record classes and personal information banks to reference in an access request.",
+  "category": "explorers",
+  "tags": [
+    "info",
+    "source",
+    "pib",
+    "atip",
+    "foi",
+    "retention",
+    "logs",
+    "privacy"
+  ],
+  "icon": "folder-search",
+  "url": "/governmentmemory/",
+  "source": "https://github.com/jsdyer/governmentmemory",
+  "hosting": "project",
+  "access": "browser",
+  "data_info": {
+    "mode": "snapshot",
+    "detail": "Six federal Info Source inventories describe the records and personal information banks each institution holds.",
+    "cadence": "Weekly"
+  }
+}
