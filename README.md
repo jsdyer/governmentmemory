@@ -27,3 +27,11 @@ Commit that file on `main` to publish the export. The push build checks its orig
 Run `node --test tests/*.test.mjs` to check reference persistence, recipient scoping and draft exports against the source snapshot.
 
 Sources are listed in `scripts/build.py`. Reproduction is attributed to the issuing agencies under [Canada.ca terms](https://www.canada.ca/en/transparency/terms.html). This independent, noncommercial tool is unaffiliated with the Government of Canada.
+
+<!-- schedule-reliability -->
+## Schedule reliability
+
+Public GitHub repositories can have scheduled workflows disabled after 60 days of inactivity. A separate weekly [schedule guard](.github/workflows/schedule-guard.yml) calls GitHub's enable-workflow API for an explicit list of refresh workflows and itself. It can restore workflows disabled for inactivity, preserves manually disabled workflows, and runs independently of collection failures.
+
+This is an interim mitigation, not a scheduling guarantee: GitHub does not document active-workflow renewal as a permanent exemption, and scheduled runs can be delayed or dropped. A scheduler on our own Linux server is the planned independent trigger. The guard does not collect data, create dummy commits, or change source/check timestamps; successful collection and published data freshness still need monitoring.
+<!-- /schedule-reliability -->
