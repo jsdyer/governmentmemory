@@ -14,6 +14,7 @@ from time import sleep
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
+from public_download import download_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://www.canada.ca/en/"
@@ -139,22 +140,8 @@ def acquire(item, local):
     if local:
         html = (local / f"{key}.html").read_text(encoding="utf-8")
     else:
-        attempts = 4
-        for attempt in range(1, attempts + 1):
-            try:
-                request = Request(url, headers={"User-Agent": "CoolCode Government Memory Map"})
-                with urlopen(request, timeout=45) as response:
-                    body = response.read(3_000_001)
-                if len(body) > 3_000_000:
-                    raise ValueError(f"{key} HTML snapshot exceeded expected size at {url}")
-                html = body.decode("utf-8")
-                break
-            except (URLError, TimeoutError, ConnectionError, IncompleteRead) as error:
-                print(f"{name} ({key}), attempt {attempt}/{attempts} at {url}: {error}", flush=True)
-                retryable = not isinstance(error, HTTPError) or error.code in (408, 429) or error.code >= 500
-                if not retryable or attempt == attempts:
-                    raise RuntimeError(f"Unable to retrieve {name} ({key}) from {url}") from error
-                sleep(2 ** attempt)
+        body = download_bytes(url, limit=3_000_000, timeout=60)
+        html = body.decode("utf-8")
     records = extract(html, key)
     if len(records) < 5:
         raise ValueError(f"{url} ({key}) returned {len(records)} labelled records. Check its markup before publishing.")
