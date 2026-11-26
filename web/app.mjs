@@ -143,7 +143,7 @@ function card(row) {
     node.append(details);
   }
   const actions = make('div', '', 'actions');
-  const outline = make('button', 'Request outline');
+  const outline = make('button', 'Draft a request');
   outline.type = 'button';
   outline.addEventListener('click', () => draft([row], row.institution));
   const save = make('button', 'Save record');
@@ -173,7 +173,11 @@ function draw(move = false) {
   });
   const pages = Math.max(1, Math.ceil(found.length / perPage));
   page = Math.min(pages, Math.max(1, page));
-  $('status').textContent = `${found.length.toLocaleString('en-CA')} ${found.length === 1 ? 'description' : 'descriptions'} matched · ${records.length} indexed`;
+  const total = found.length.toLocaleString('en-CA');
+  const description = found.length === 1 ? 'inventory entry' : 'inventory entries';
+  $('status').textContent = q || institution || type
+    ? `${total} matching ${description}`
+    : `Browse all ${total} ${description}`;
   const children = found.slice((page - 1) * perPage, page * perPage).map(card);
   if (!children.length) children.push(make('p', 'Try a shorter phrase, a record number or a different institution.', 'empty'));
   $('results').replaceChildren(...children);

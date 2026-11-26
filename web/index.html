@@ -6,13 +6,13 @@
 </head><body>
 <a class="skip" href="#main">Skip to search</a>
 <header><nav class="wrap mast" aria-label="Site"><a href="https://coolcode.ca/#workbench"><span class="tag" aria-hidden="true">&gt;_</span>CoolCode.ca</a><a href="https://coolcode.ca/atip/">ATIP Records Explorer ↗</a></nav>
-<div class="hero"><div class="wrap"><h1>Government Memory Map</h1><p>Find what federal institutions say they keep. Use official record numbers, inventory descriptions and published retention details to make an access request more precise.</p></div></div></header>
+<div class="hero"><div class="wrap"><h1>Search federal record inventories</h1><p>Find which institution keeps records on a topic. Enter a keyword or try an example, then use a record number to draft an access request.</p></div></div></header>
 <main id="main" class="wrap">
   <section class="panel" aria-label="Search inventories">
     <form id="filters" class="toolbar"><label>Keyword or record number<input type="search" id="query" placeholder="e.g. logs, credentials, FIN PPU 200" maxlength="160"></label>
     <label>Institution<select id="institution"><option value="">All indexed inventories</option></select></label>
     <label>Record type<select id="type"><option value="">All types</option><option>Class of Records</option><option>Personal Information Bank</option></select></label></form>
-    <div class="samples" aria-label="Example searches"><button type="button" data-query="authentication">Authentication</button><button type="button" data-query="network monitoring">Network monitoring</button><button type="button" data-query="payment service">Payment services</button><button type="button" id="clear">Clear</button></div>
+    <div class="samples" aria-label="Example searches"><span>Try a topic</span><button type="button" data-query="authentication">Authentication</button><button type="button" data-query="network monitoring">Network monitoring</button><button type="button" data-query="payment service">Payment services</button><button type="button" id="clear">Clear</button></div>
   </section>
   <details id="workspace" class="panel workspace">
     <summary>Saved records <span class="code" id="saved-count">0</span></summary>
@@ -36,5 +36,5 @@
   <p class="note">An inventory describes potential holdings. Confirm applicability and scope with the institution. A Personal Information Bank may help locate your own information. A Class of Records describes files associated with an activity.</p>
 </main>
 <dialog id="draft" aria-labelledby="draft-title"><h2 id="draft-title">Request outline</h2><p class="muted">Edit the outline and add dates plus the specific information you need.</p><label>Editable request outline<textarea id="draft-text"></textarea></label><div class="actions"><button type="button" id="copy">Copy outline</button><button type="button" id="download-draft">Download outline</button><button type="button" id="close">Close</button><a href="https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information/request-information/make-request.html">Official request guidance ↗</a></div><p id="copy-status" role="status"></p></dialog>
-<footer><div class="wrap"><b>Sources</b> Treasury Board of Canada Secretariat’s <a href="https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information/info-source.html">Info Source</a>, plus inventories from Shared Services Canada, CRA, IRCC and Finance Canada. Short excerpts are attributed to their individual source pages. <span id="built"></span> <a href="https://github.com/jsdyer/governmentmemory">Project source</a> <a href="https://coolcode.ca/report/?tool=governmentmemory" referrerpolicy="no-referrer">Report an issue</a></div></footer>
+<footer><div class="wrap"><b>Sources</b> Treasury Board of Canada Secretariat’s <a href="https://www.canada.ca/en/treasury-board-secretariat/services/access-information-privacy/access-information/info-source.html">Info Source</a>, plus inventories from Shared Services Canada, CRA, IRCC and Finance Canada. The index checks these sources on Mondays. <span id="built"></span> <a href="https://github.com/jsdyer/governmentmemory">Project source</a> <a href="https://coolcode.ca/report/?tool=governmentmemory" referrerpolicy="no-referrer">Report an issue</a></div></footer>
 <script type="module" src="./app.mjs"></script></body></html>
